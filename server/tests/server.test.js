@@ -4,15 +4,13 @@ const request = require('supertest');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 const {product} = require('./../models/Product');
-
-// beforeEach(()=>{
-//   Todo.remove({});
-// });
+//done has to be called only ones
 beforeEach((done)=>{
   product.remove({}).then(()=> {
     Todo.remove({}).then(()=>done());
   });
 });
+//Describe a test suite that contains only one test. describe+it
 describe('POST /product',()=>{
    it("Adding a product test",(done)=>{
      var item={
@@ -24,19 +22,15 @@ describe('POST /product',()=>{
      .send(item)
      .expect(200)
      .expect((res)=>{
-       console.log("res.body.name",res.body.name);
-       console.log("item.name=",item.name)
+       //console.log("res.body.name",res.body.name);
+       //console.log("item.name=",item.name)
        expect(res.body.name).toBe(item.name);
        expect(res.body.price).toBe(item.price);
      })
      //.end(done());
      .end((err,res)=>{
-       if(err){
-         console.log("How are you doing?"+ err);
-         return done(err);}
+       if(err){ return done(err);}
        product.find().then((prods)=>{
-         console.log(prods);
-         console.log("Doing well");
          expect(prods.length).toBe(1);
          expect(prods[0].name).toBe(item.name);
          done();
